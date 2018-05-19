@@ -36,8 +36,16 @@ sumarTodosLosViajes = sum.map costo
 realizarUnViaje :: [Viaje] -> [Chofer] -> [Chofer]
 realizarUnViaje unViaje = efectuarViaje unViaje.choferConMenosViajes.filter (choferPuedeTomarElViaje unViaje)
 
-choferConMenosViajes ::
-choferConMenosViajes listaChoferes = map (length.viajesTomados)
+choferConMenosViajes :: [Chofer] -> Chofer
+choferConMenosViajes (primerChofer: segundoChofer: restoChoferes) = choferConMenosViajes ((compararDosChoferes primerChofer segundoChofer):restoChoferes)
+
+compararDosChoferes :: Chofer -> Chofer -> Chofer
+compararDosChoferes primerChofer segundoChofer 
+		| cantidadViajesRealizados primerChofer > cantidadViajesRealizados segundoChofer = segundoChofer
+		| otherwise = primerChofer
+
+cantidadViajesRealizados :: Chofer -> Int
+cantidadDeViajesRealizados = length.viajesTomados
 
 efectuarViaje :: Viaje -> Chofer -> Chofer
 efectuarViaje unViaje unChofer = unChofer { viajesTomados = (++ unViaje).viajesTomados $ unChofer }
