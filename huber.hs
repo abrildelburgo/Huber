@@ -2,7 +2,7 @@ type Condicion = Viaje -> Bool
 
 data Chofer = Chofer { nombre :: String, kilometraje :: Int, viajesTomados :: [Viaje], condicion :: Condicion }
 data Viaje = Viaje { fecha :: (Int, Int, Int), cliente :: Cliente, costo :: Int }
-data Cliente = Cliente { nombre :: String, direccion :: String }
+data Cliente = Cliente { nombreCliente :: String, direccion :: String }
 -- el chofer del viaje son independientes uno de otro. No asi viaje de cliente (van juntos siempre)
 
 cualquierViaje :: Condicion
@@ -12,13 +12,13 @@ viajesMayorA200Pesos :: Condicion
 viajesMayorA200Pesos = (>200).costo
 
 clienteNLetras :: Int -> Condicion
-clienteNLetras cantidadLetras = (>cantidadLetras).length.nombre.cliente
+clienteNLetras cantidadLetras = (>cantidadLetras).length.nombreCliente.cliente
 
 clienteNoViveEn :: String -> Condicion
 clienteNoViveEn zona = (/=zona).direccion.cliente
 
 lucas = Cliente "Lucas" "Victoria"
-daniel = Chofer "Daniel" 23500 [ Viaje (20,04,2017) , lucas , 150 ] (clienteNoViveEn "Olivos")
+daniel = Chofer "Daniel" 23500 [ Viaje (20,04,2017) lucas 150, Viaje (20,04,2017) lucas 150] (clienteNoViveEn "Olivos")
 alejandra = Chofer "Alejandra" 180000 [] cualquierViaje
 
 choferPuedeTomarElViaje :: Viaje -> Chofer -> Bool
@@ -31,7 +31,8 @@ sumarTodosLosViajes :: [Viaje] -> Int
 sumarTodosLosViajes = sum.map costo 
 
 -- alternativaSumarTodosLosViajes :: [Viaje] -> Int
--- alternativaSumarTodosLosViajes (x:xs) = costo.x + sumarTodosLosViajes xs
+-- alternativaSumarTodosLosViajes [] = 0
+-- alternativaSumarTodosLosViajes (x:xs) = costo x + sumarTodosLosViajes xs
 
 realizarUnViaje :: [Viaje] -> [Chofer] -> [Chofer]
 realizarUnViaje unViaje = efectuarViaje unViaje.choferConMenosViajes.filter (choferPuedeTomarElViaje unViaje)
